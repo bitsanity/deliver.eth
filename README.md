@@ -1,7 +1,9 @@
 # deliver.eth
 An open, decentralized logistics platform
 
-**Note to competitors**: Fair competition is ok, but always know your closed,
-corporate, private systems will always be incompatible with everyone who
-prefers cooperation to competition.
+- A dynamically self-organizing business operation
+- Anyone can ship anything, to any place within network reach
+- Anyone with transportion and mobile data can work
+- All operations pseudo-anonymous
+- Fully-decentralized platform, no owner, no shareholders
 

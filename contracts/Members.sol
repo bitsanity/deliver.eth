@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.34;
 
 import 'Ownable.sol';
 
@@ -8,54 +8,55 @@ import 'Ownable.sol';
 
 contract Members is Ownable {
 
-  event Hub( address member, bytes location );
+  // Hubs must publish their physical location for mobile members to find
+  event Located( address member, bytes location );
 
-  mapping(address => uint256) amounts;
-  mapping(address => bytes) locations;
+  mapping(address => uint256) public bonds;
+  mapping(address => bytes) public locations;
 
   uint256 public threshold;
 
   function addToBond() external payable {
-    amounts[msg.sender] += msg.value;
+    bonds[msg.sender] += msg.value;
   }
 
   function releaseBond() external {
-    uint256 amt = amounts[msg.sender];
-    amounts[msg.sender] = 0;
+    uint256 amt = bonds[msg.sender];
+    bonds[msg.sender] = 0;
     (bool success,) = payable(msg.sender).call{value: amt}("");
     require( success, "bond release failed" );
   }
 
   function slash( address addr ) external isOwner returns (uint256 result) {
-    result = amounts[addr]; // returns how much we're slashing
-    amounts[addr] = 0;
-    (bool success,) = _owner.call{value: amounts[addr]}("");
+    result = bonds[addr]; // returns how much we're slashing
+    bonds[addr] = 0;
+    (bool success,) = _owner.call{value: result}("");
     require( success, "slash failed" );
   }
 
   function isBonded( address addr ) external view returns (bool) {
-    return amounts[addr] >= threshold;
+    return bonds[addr] >= threshold;
   }
 
   // must put up triple bond to become an arbitrator
   function isArbitrator( address addr ) external view returns (bool) {
-    return amounts[addr] >= threshold * 3;
+    return bonds[addr] >= threshold * 3;
   }
 
-  // must put up a 10x bond to operate a hub
+  // must have a location and establish a 10x bond to operate a hub
   function isHub( address addr ) public view returns (bool) {
-    return amounts[addr] >= threshold * 10;
+    return    locations[addr].length > 0
+           && bonds[addr] >= threshold * 10;
   }
 
   function setLocation( bytes calldata location ) external {
-    require( isHub(msg.sender), "set hub bond first" );
     locations[msg.sender] = location;
-    emit Hub( msg.sender, location );
+    emit Located( msg.sender, location );
   }
 
   function unsetLocation() external {
     delete locations[msg.sender];
-    emit Hub( msg.sender, hex"" );
+    emit Located( msg.sender, hex"" );
   }
 
   constructor( uint256 _threshold ) {
