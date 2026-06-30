@@ -1,9 +1,9 @@
-# deliver.eth
+# delivereth
 An open, decentralized logistics platform
 
-- A dynamically self-organizing business operation
+- DELIVERETH is a dynamically self-organizing package delivery business
 - Anyone can ship anything, to any place within network reach
-- Anyone with transportion and mobile data can work
-- All operations pseudo-anonymous
-- Fully-decentralized platform, no owner, no shareholders
+- Anyone with transportation and a smartphone can provide service
+- All operations are pseudo-anonymous, every user is just a number
+- Fully-decentralized, blockchain-based. No owner, no shareholders
 
